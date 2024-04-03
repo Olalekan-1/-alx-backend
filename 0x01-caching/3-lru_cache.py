@@ -1,16 +1,16 @@
 #!/usr/bin/python3
-""" FIFOCache module
+""" LRUCache module
 """
 
 from base_caching import BaseCaching
 
 
-class FIFOCache(BaseCaching):
-    """ FIFOCache inherits from BaseCaching and is a caching system
+class LRUCache(BaseCaching):
+    """ LRUCache inherits from BaseCaching and is a caching system
     """
 
     def __init__(self):
-        """ Initialize the FIFOCache
+        """ Initialize the LRUCache
         """
         super().__init__()
         self.queue = []
@@ -21,7 +21,9 @@ class FIFOCache(BaseCaching):
         if key is None or item is None:
             return
 
-        if len(self.cache_data) >= self.MAX_ITEMS:
+        if key in self.cache_data:
+            self.queue.remove(key)
+        elif len(self.cache_data) >= self.MAX_ITEMS:
             discarded_key = self.queue.pop(0)
             del self.cache_data[discarded_key]
             print("DISCARD:", discarded_key)
@@ -35,4 +37,6 @@ class FIFOCache(BaseCaching):
         if key is None or key not in self.cache_data:
             return None
 
+        self.queue.remove(key)
+        self.queue.append(key)
         return self.cache_data[key]
