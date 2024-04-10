@@ -21,6 +21,7 @@ users = {
 
 @babel.localeselector
 def get_locale():
+
     """ Get the locale language """
 
     if 'locale' in request.args:
@@ -28,7 +29,17 @@ def get_locale():
         if requested_locale in app.config['LANGUAGES']:
             return requested_locale
 
-    return request.accept_languages.best_match(app.config['LANGUAGES'])
+    if hasattr(g, 'user') and g.user and 'locale' in g.user:
+        user_locale = g.user['locale']
+        if user_locale in app.config['LANGUAGES']:
+            return user_locale
+
+    accept_languages = request.accept_languages
+    best_match = accept_languages.best_match(app.config['LANGUAGES'])
+    if best_match:
+        return best_match
+
+    return app.config['BABEL_DEFAULT_LOCALE']
 
 
 def get_user(user_id):
@@ -51,21 +62,8 @@ def index():
             % {'username': g.user['name']}
     else:
         welcome_message = _("You are not logged in.")
+    return render_template('6-index.html', welcome_message=welcome_message)
 
-    current_time = get_current_time()
-    current_time_formatted = format_time(current_time)
-
-    return render_template('index.html', welcome_message=welcome_message,
-    current_time=current_time_formatted)
-
-def get_current_time():
-    """  Get the current time in the inferred time zone """
-    inferred_timezone = pytz.timezone(get_timezone())
-    return datetime.datetime.now(inferred_timezone)
-
-def format_time(time):
-    """ Format the time according to the default format """
-    return time.strftime("%b %d, %Y, %I:%M:%S %p")
 
 if __name__ == '__main__':
     app.run(debug=True)
