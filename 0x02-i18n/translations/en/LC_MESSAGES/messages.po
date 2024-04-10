@@ -8,6 +8,10 @@ msgstr "Welcome to Holberton"
 
 msgid "home_header"
 msgstr "Hello world!"
+
+msgid "current_time_is"
+msgstr "The current time is %(current_time)s."
+
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2024-04-10 00:13+0100\n"
